@@ -25,6 +25,7 @@ namespace OpenAI {
         public virtual OpenAIResponseClient GetOpenAIResponseClient(string model);
         public virtual RealtimeClient GetRealtimeClient();
         public virtual VectorStoreClient GetVectorStoreClient();
+        public virtual VideoClient GetVideoClient();
     }
     public class OpenAIClientOptions : ClientPipelineOptions {
         public Uri Endpoint { get; set; }
@@ -1447,6 +1448,7 @@ namespace OpenAI.Chat {
     public class ChatCompletionMessageListDatum : IJsonModel<ChatCompletionMessageListDatum>, IPersistableModel<ChatCompletionMessageListDatum> {
         public IReadOnlyList<ChatMessageAnnotation> Annotations { get; }
         public string Content { get; }
+        public IList<ChatMessageContentPart> ContentParts { get; }
         public string Id { get; }
         public ChatOutputAudio OutputAudio { get; }
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -1921,6 +1923,7 @@ namespace OpenAI.Chat {
         public static ChatCompletion ChatCompletion(string id = null, ChatFinishReason finishReason = ChatFinishReason.Stop, ChatMessageContent content = null, string refusal = null, IEnumerable<ChatToolCall> toolCalls = null, ChatMessageRole role = ChatMessageRole.System, ChatFunctionCall functionCall = null, IEnumerable<ChatTokenLogProbabilityDetails> contentTokenLogProbabilities = null, IEnumerable<ChatTokenLogProbabilityDetails> refusalTokenLogProbabilities = null, DateTimeOffset createdAt = default, string model = null, ChatServiceTier? serviceTier = null, string systemFingerprint = null, ChatTokenUsage usage = null, ChatOutputAudio outputAudio = null, IEnumerable<ChatMessageAnnotation> messageAnnotations = null);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public static ChatCompletion ChatCompletion(string id, ChatFinishReason finishReason, ChatMessageContent content, string refusal, IEnumerable<ChatToolCall> toolCalls, ChatMessageRole role, ChatFunctionCall functionCall, IEnumerable<ChatTokenLogProbabilityDetails> contentTokenLogProbabilities, IEnumerable<ChatTokenLogProbabilityDetails> refusalTokenLogProbabilities, DateTimeOffset createdAt, string model, string systemFingerprint, ChatTokenUsage usage);
+        public static ChatCompletionMessageListDatum ChatCompletionMessageListDatum(string id, string content, string refusal, ChatMessageRole role, IList<ChatMessageContentPart> contentParts = null, IList<ChatToolCall> toolCalls = null, IList<ChatMessageAnnotation> annotations = null, string functionName = null, string functionArguments = null, ChatOutputAudio outputAudio = null);
         public static ChatInputTokenUsageDetails ChatInputTokenUsageDetails(int audioTokenCount = 0, int cachedTokenCount = 0);
         public static ChatMessageAnnotation ChatMessageAnnotation(int startIndex = 0, int endIndex = 0, Uri webResourceUri = null, string webResourceTitle = null);
         public static ChatOutputAudio ChatOutputAudio(BinaryData audioBytes, string id = null, string transcript = null, DateTimeOffset expiresAt = default);
@@ -6004,5 +6007,30 @@ namespace OpenAI.VectorStores {
         InProgress = 1,
         Completed = 2,
         Expired = 3
+    }
+}
+namespace OpenAI.Videos {
+    public class VideoClient {
+        protected VideoClient();
+        public VideoClient(ApiKeyCredential credential, OpenAIClientOptions options);
+        public VideoClient(ApiKeyCredential credential);
+        public VideoClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public VideoClient(AuthenticationPolicy authenticationPolicy);
+        protected internal VideoClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        public VideoClient(string apiKey);
+        public Uri Endpoint { get; }
+        public ClientPipeline Pipeline { get; }
+        public virtual ClientResult CreateVideo(BinaryContent content, string contentType, RequestOptions options = null);
+        public virtual Task<ClientResult> CreateVideoAsync(BinaryContent content, string contentType, RequestOptions options = null);
+        public virtual ClientResult CreateVideoRemix(string videoId, BinaryContent content, string contentType, RequestOptions options = null);
+        public virtual Task<ClientResult> CreateVideoRemixAsync(string videoId, BinaryContent content, string contentType, RequestOptions options = null);
+        public virtual ClientResult DeleteVideo(string videoId, RequestOptions options = null);
+        public virtual Task<ClientResult> DeleteVideoAsync(string videoId, RequestOptions options = null);
+        public virtual ClientResult DownloadVideo(string videoId, string variant = null, RequestOptions options = null);
+        public virtual Task<ClientResult> DownloadVideoAsync(string videoId, string variant = null, RequestOptions options = null);
+        public virtual ClientResult GetVideo(string videoId, RequestOptions options = null);
+        public virtual Task<ClientResult> GetVideoAsync(string videoId, RequestOptions options = null);
+        public virtual ClientResult GetVideos(long? limit = null, string order = null, string after = null, RequestOptions options = null);
+        public virtual Task<ClientResult> GetVideosAsync(long? limit = null, string order = null, string after = null, RequestOptions options = null);
     }
 }
